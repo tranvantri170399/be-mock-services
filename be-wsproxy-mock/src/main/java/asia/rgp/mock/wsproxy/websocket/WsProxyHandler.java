@@ -210,6 +210,7 @@ public class WsProxyHandler extends TextWebSocketHandler {
       
       // Add extended user parameters to match staging environment
       String[] userIdParts = wsSession.getUserId().split(":");
+      // Format: AGENCY_001:username:uuid
       String displayName = userIdParts.length >= 2 ? userIdParts[1] : wsSession.getUserId();
       String memberId = userIdParts.length >= 3 ? userIdParts[2] : UUID.randomUUID().toString();
       
@@ -232,7 +233,7 @@ public class WsProxyHandler extends TextWebSocketHandler {
       authParams.put("os", "unknown");
       authParams.put("guarranteed_gold", 0);
       authParams.put("ipAddress", "192.168.1.1");
-      authParams.put("userAgent", "Mozilla/5.0");
+      authParams.put("userAgent", "\"Mozilla/5.0\"");
       authParams.put("avatar", "");
       authParams.put("wsProxyId", wsSession.getSessionId());
       authParams.put("accessToken", wsSession.getGameToken());

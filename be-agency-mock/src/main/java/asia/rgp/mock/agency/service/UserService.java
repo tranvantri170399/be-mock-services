@@ -137,7 +137,7 @@ public class UserService {
   public GameTokenResponse playGame(UUID userId, PlayGameRequest request, String clientIp) {
     User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-    GameTokenService.GameTokenResult result = gameTokenService.generateGameToken(user.getId(), request.getGameId(),
+    GameTokenService.GameTokenResult result = gameTokenService.generateGameToken(user.getId(), user.getUsername(), request.getGameId(),
         clientIp);
 
     return GameTokenResponse.builder()

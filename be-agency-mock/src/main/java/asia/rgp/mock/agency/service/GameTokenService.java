@@ -26,11 +26,11 @@ public class GameTokenService {
     return Keys.hmacShaKeyFor(secret.getBytes());
   }
 
-  public GameTokenResult generateGameToken(UUID userId, String gameId, String clientIp) {
+  public GameTokenResult generateGameToken(UUID userId, String username, String gameId, String clientIp) {
     String refreshToken = UUID.randomUUID().toString();
 
     // Generate stable userId in format: AGENCY_001:username:uuid
-    String stableUserId = String.format("%s:%s:%s", agencyId, userId.toString(), userId.toString());
+    String stableUserId = String.format("%s:%s:%s", agencyId, username, userId.toString());
 
     Map<String, Object> claims = new HashMap<>();
     claims.put("sub", stableUserId);
