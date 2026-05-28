@@ -206,12 +206,15 @@ public class WsProxyHandler extends TextWebSocketHandler {
       authParams.put("token", wsSession.getGameToken());
       authParams.put("agencyId", wsSession.getAgencyId());
       authParams.put("userId", wsSession.getUserId());
-      authParams.put("username", wsSession.getUserId());
+      
+      // Parse username from userId (format: AGENCY_001:username:uuid)
+      String[] userIdParts = wsSession.getUserId().split(":");
+      String username = userIdParts.length >= 2 ? userIdParts[1] : wsSession.getUserId();
+      authParams.put("username", username);
       
       // Add extended user parameters to match staging environment
-      String[] userIdParts = wsSession.getUserId().split(":");
       // Format: AGENCY_001:username:uuid
-      String displayName = userIdParts.length >= 2 ? userIdParts[1] : wsSession.getUserId();
+      String displayName = username;
       String memberId = userIdParts.length >= 3 ? userIdParts[2] : UUID.randomUUID().toString();
       
       authParams.put("displayName", displayName);
