@@ -205,17 +205,18 @@ public class WsProxyHandler extends TextWebSocketHandler {
       Map<String, Object> authParams = new java.util.LinkedHashMap<>();
       authParams.put("token", wsSession.getGameToken());
       authParams.put("agencyId", wsSession.getAgencyId());
-      authParams.put("userId", wsSession.getUserId());
       
-      // Parse username from userId (format: AGENCY_001:username:uuid)
+      // Parse userId parts (format: AGENCY_001:username:uuid)
       String[] userIdParts = wsSession.getUserId().split(":");
       String username = userIdParts.length >= 2 ? userIdParts[1] : wsSession.getUserId();
+      String memberId = userIdParts.length >= 3 ? userIdParts[2] : UUID.randomUUID().toString();
+      String displayName = username;
+      
+      // Don't send userId in authParams to avoid duplication by game backend
+      // Game backend will extract userId from the token
       authParams.put("username", username);
       
       // Add extended user parameters to match staging environment
-      // Format: AGENCY_001:username:uuid
-      String displayName = username;
-      String memberId = userIdParts.length >= 3 ? userIdParts[2] : UUID.randomUUID().toString();
       
       authParams.put("displayName", displayName);
       authParams.put("memberId", memberId);
