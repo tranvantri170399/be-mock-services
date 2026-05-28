@@ -23,7 +23,7 @@ app:
     base-url: http://localhost:8081
 
   luigi-wallet:
-    host: localhost
+    host: be-wallet-mock
     port: 9093
 
   game-token:
