@@ -212,8 +212,8 @@ public class WsProxyHandler extends TextWebSocketHandler {
       String memberId = userIdParts.length >= 3 ? userIdParts[2] : UUID.randomUUID().toString();
       String displayName = username;
       
-      // Don't send userId in authParams to avoid duplication by game backend
-      // Game backend will extract userId from the token
+      // Add userId to authParams for game backend to extract uid
+      authParams.put("userId", wsSession.getUserId());
       authParams.put("username", username);
       
       // Add extended user parameters to match staging environment
