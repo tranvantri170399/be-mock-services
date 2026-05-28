@@ -46,10 +46,15 @@ public class WalletSyncClient {
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.APPLICATION_JSON);
 
+      // Parse userId (format: AGENCY_001:username:uuid)
+      String[] userIdParts = userId.split(":");
+      String username = userIdParts.length >= 2 ? userIdParts[1] : userId;
+      String memberId = userIdParts.length >= 3 ? userIdParts[2] : userId;
+
       Map<String, String> request = Map.of(
           "agencyId", agencyId,
-          "uid", userId,
-          "memberId", userId);
+          "uid", username,
+          "memberId", memberId);
 
       HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
       restTemplate.postForObject(walletBaseUrl + "/api/v1/user/register", entity, Map.class);
@@ -64,10 +69,15 @@ public class WalletSyncClient {
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.APPLICATION_JSON);
 
+      // Parse userId (format: AGENCY_001:username:uuid)
+      String[] userIdParts = userId.split(":");
+      String username = userIdParts.length >= 2 ? userIdParts[1] : userId;
+      String memberId = userIdParts.length >= 3 ? userIdParts[2] : userId;
+
       Map<String, Object> request = Map.of(
           "agencyId", agencyId,
-          "uid", userId,
-          "memberId", userId,
+          "uid", username,
+          "memberId", memberId,
           "amount", amount);
 
       HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
