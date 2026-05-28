@@ -192,9 +192,9 @@ public class WsProxyHandler extends TextWebSocketHandler {
 
     Map<String, Object> normalizedData = new java.util.LinkedHashMap<>(commandData);
     normalizedData.put("cmd", cmd);
-    // Include agency_id and user_id for backend processing
+    // Include agency_id for backend processing
+    // user_id is already in the token and will be extracted by game backend
     normalizedData.put("agency_id", wsSession.getAgencyId());
-    normalizedData.put("user_id", wsSession.getUserId());
 
     log.info("[WS] Command: sessionId={}, cmd={}, zone={}", wsSession.getSessionId(), cmd, zone);
 
