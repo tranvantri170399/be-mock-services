@@ -19,8 +19,9 @@ public class WalletClient {
    */
   public long getBalance(String agencyId, String userId) {
     try {
-      // Build Luigi userId format: agencyId:userId:userId
-      String luigiUserId = String.format("%s:%s:%s", agencyId, userId, userId);
+      // Use userId as-is (format: AGENCY_001:username:uuid)
+      // Don't duplicate userId to avoid format issues
+      String luigiUserId = userId;
 
       double balance = luigiWalletClient.getBalance(luigiUserId);
       long balanceCents = (long) (balance * 100); // Convert to cents
