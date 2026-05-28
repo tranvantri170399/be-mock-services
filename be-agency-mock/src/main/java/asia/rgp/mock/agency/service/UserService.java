@@ -66,7 +66,8 @@ public class UserService {
     transactionRepository.save(initialTx);
 
     // Sync to be-wallet-mock
-    walletSyncClient.registerUser(user.getId().toString(), agencyId);
+    String userId = String.format("%s:%s:%s", agencyId, user.getUsername(), user.getId().toString());
+    walletSyncClient.registerUser(userId, agencyId);
 
     String token = jwtService.generateToken(user.getUsername(), user.getDisplayName(), user.getId());
 
@@ -116,7 +117,8 @@ public class UserService {
 
     // Sync to be-wallet-mock using new deposit endpoint
     double amountDisplay = amountCents / 100.0;
-    walletSyncClient.deposit(user.getId().toString(), agencyId, amountDisplay);
+    String formattedUserId = String.format("%s:%s:%s", agencyId, user.getUsername(), user.getId().toString());
+    walletSyncClient.deposit(formattedUserId, agencyId, amountDisplay);
 
     Transaction tx = Transaction.builder()
         .userId(user.getId())
