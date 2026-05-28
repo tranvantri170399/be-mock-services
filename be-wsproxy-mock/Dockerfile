@@ -3,7 +3,6 @@ WORKDIR /app
 COPY build.gradle.kts settings.gradle.kts ./
 COPY libs ./libs
 COPY src ./src
-COPY proto ./proto
 RUN gradle build -x test --no-daemon
 
 FROM amazoncorretto:17-alpine3.19

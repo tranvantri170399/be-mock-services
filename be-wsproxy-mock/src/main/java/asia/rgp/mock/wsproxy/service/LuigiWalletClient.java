@@ -1,8 +1,8 @@
 package asia.rgp.mock.wsproxy.service;
 
 import com.luigi.outbound.integration.grpc.TransferGatewayGrpc;
-import com.luigi.outbound.integration.grpc.TransferGatewayProto.BalanceRequest;
-import com.luigi.outbound.integration.grpc.TransferGatewayProto.BalanceResponse;
+import com.luigi.outbound.integration.grpc.BalanceRequest;
+import com.luigi.outbound.integration.grpc.BalanceResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.extern.slf4j.Slf4j;

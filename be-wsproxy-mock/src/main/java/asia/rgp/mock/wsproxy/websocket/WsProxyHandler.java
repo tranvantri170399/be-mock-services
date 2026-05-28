@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -206,13 +207,50 @@ public class WsProxyHandler extends TextWebSocketHandler {
       authParams.put("agencyId", wsSession.getAgencyId());
       authParams.put("userId", wsSession.getUserId());
       authParams.put("username", wsSession.getUserId());
+      
+      // Add extended user parameters to match staging environment
+      String[] userIdParts = wsSession.getUserId().split(":");
+      String displayName = userIdParts.length >= 2 ? userIdParts[1] : wsSession.getUserId();
+      String memberId = userIdParts.length >= 3 ? userIdParts[2] : UUID.randomUUID().toString();
+      
+      authParams.put("displayName", displayName);
+      authParams.put("memberId", memberId);
+      authParams.put("isBot", false);
+      authParams.put("agentId", wsSession.getAgencyId());
+      authParams.put("gender", "unknown");
+      authParams.put("registeredDate", System.currentTimeMillis());
+      authParams.put("source", "web");
+      authParams.put("agencyCode", wsSession.getAgencyId());
+      authParams.put("type", "player");
+      authParams.put("gold", 0);
+      authParams.put("loginTime", System.currentTimeMillis());
+      authParams.put("fg_id", "");
+      authParams.put("browser", "unknown");
+      authParams.put("affId", "");
+      authParams.put("userIdNum", 0);
+      authParams.put("subi", "");
+      authParams.put("os", "unknown");
+      authParams.put("guarranteed_gold", 0);
+      authParams.put("ipAddress", "192.168.1.1");
+      authParams.put("userAgent", "Mozilla/5.0");
+      authParams.put("avatar", "");
+      authParams.put("wsProxyId", wsSession.getSessionId());
+      authParams.put("accessToken", wsSession.getGameToken());
+      authParams.put("phone", "");
+      authParams.put("userNumId", 0);
+      authParams.put("time", System.currentTimeMillis());
+      authParams.put("device", "desktop");
+      
       byte[] profileBytes = messagePackHelper.encode(authParams);
 
+      // Generate separate pluginUserId different from userId
+      String pluginUserId = UUID.randomUUID().toString();
+      
       asia.rgp.mock.wsproxy.generated.PluginUser pluginUser = asia.rgp.mock.wsproxy.generated.PluginUser.newBuilder()
-          .setId(wsSession.getUserId())
-          .setUsername(wsSession.getUserId())
+          .setId(pluginUserId)
+          .setUsername(displayName)
           .setSessionId(wsSession.getSessionId())
-          .setIp("")
+          .setIp("192.168.1.1")
           .setParameters(com.google.protobuf.ByteString.copyFrom(profileBytes))
           .build();
 

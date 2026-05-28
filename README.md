@@ -100,12 +100,12 @@ ws://localhost:8082/websocket
 
 **Auth Frame:**
 ```json
-[1, "MiniGame", "game-nagas-treasure", "", {"accessToken": "<game-token>"}]
+[1, "MiniGameGatewayZone", "game-nagas-treasure", "", {"accessToken": "<game-token>"}]
 ```
 
 **Auth Success Response:**
 ```json
-[1, true, 0, "sessionId", "MiniGame", null]
+[1, true, 0, "sessionId", "MiniGameGatewayZone", null]
 ```
 
 **Cmd 100 (Account State):**
@@ -115,17 +115,17 @@ ws://localhost:8082/websocket
 
 **Cmd 1005 (JOIN):**
 ```json
-[6, "MiniGame", "game-nagas-treasure", {"cmd": "1005"}]
+[6, "MiniGameGatewayZone", "game-nagas-treasure", {"cmd": "1005"}]
 ```
 
 **Cmd 1500 (SPIN):**
 ```json
-[6, "MiniGame", "game-nagas-treasure", {"cmd": "1500", "bet": "1"}]
+[6, "MiniGameGatewayZone", "game-nagas-treasure", {"cmd": "1500", "bet": "1"}]
 ```
 
 **Transport Ping:**
 ```json
-["7", "MiniGame", "1", 1]
+["7", "MiniGameGatewayZone", "1", 1]
 ```
 
 **Pong Response:**
@@ -186,7 +186,7 @@ Mỗi service là Spring Boot project độc lập với Gradle build.
 
 **Example:**
 ```
-[6, "MiniGame", "game-nagas-treasure", {"cmd": "1500", "bet": "1"}]
+[6, "MiniGameGatewayZone", "game-nagas-treasure", {"cmd": "1500", "bet": "1"}]
 ```
 
 ## Troubleshooting

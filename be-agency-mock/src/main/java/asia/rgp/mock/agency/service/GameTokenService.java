@@ -29,8 +29,11 @@ public class GameTokenService {
   public GameTokenResult generateGameToken(UUID userId, String gameId, String clientIp) {
     String refreshToken = UUID.randomUUID().toString();
 
+    // Generate stable userId in format: AGENCY_001:username:uuid
+    String stableUserId = String.format("%s:%s:%s", agencyId, userId.toString(), userId.toString());
+
     Map<String, Object> claims = new HashMap<>();
-    claims.put("sub", userId.toString());
+    claims.put("sub", stableUserId);
     claims.put("iss", "inbound-service");
     claims.put("gid", gameId);
     claims.put("aid", agencyId);
@@ -47,7 +50,7 @@ public class GameTokenService {
     String gameUrl = String.format(
         "http://localhost:8082/play?token=%s", token); // WsProxy mock URL
 
-    return new GameTokenResult(gameId, refreshToken, token, gameUrl, userId.toString());
+    return new GameTokenResult(gameId, refreshToken, token, gameUrl, stableUserId);
   }
 
   public boolean validateGameToken(String token) {
