@@ -237,7 +237,9 @@ public class WsProxyHandler extends TextWebSocketHandler {
       authParams.put("os", "unknown");
       authParams.put("guarranteed_gold", 0);
       authParams.put("ipAddress", "192.168.1.1");
-      authParams.put("userAgent", "\"Mozilla/5.0\"");
+      // Include uuid and agency_code in userAgent for game backend parsing
+      String userAgentJson = String.format("{\"uuid\":\"%s\",\"agency_code\":\"%s\"}", memberId, wsSession.getAgencyId());
+      authParams.put("userAgent", userAgentJson);
       authParams.put("avatar", "");
       authParams.put("wsProxyId", wsSession.getSessionId());
       authParams.put("accessToken", wsSession.getGameToken());
