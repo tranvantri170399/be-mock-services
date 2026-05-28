@@ -1,0 +1,30 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: be-wsproxy-mock
+
+app:
+  websocket:
+    path: /websocket
+    allowed-origins: "*"
+  
+  grpc:
+    game-backend:
+      host: localhost
+      port: 9092
+      deadline-seconds: 30
+  
+  zmq:
+    sub-url: tcp://0.0.0.0:5555
+  
+  wallet:
+    base-url: http://localhost:8081
+
+  luigi-wallet:
+    host: localhost
+    port: 9093
+
+  game-token:
+    secret: game-token-secret-key-change-in-production-12345678901234567890

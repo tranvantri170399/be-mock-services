@@ -1,0 +1,86 @@
+services:
+  # Agency API Mock
+  be-agency-mock:
+    build:
+      context: ./be-agency-mock
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+      - APP_JWT_SECRET=agency-mock-secret-key-change-in-production-12345678901234567890
+      - APP_JWT_EXPIRATION=86400000
+      - APP_GAME_TOKEN_SECRET=game-token-secret-key-change-in-production-12345678901234567890
+      - APP_GAME_TOKEN_EXPIRATION=3600000
+      - APP_WALLET_INITIAL_BALANCE=1000000
+      - APP_WALLET_AGENCY_ID=AGENCY_001
+      - APP_WALLET_BASE_URL=http://be-wallet-mock:8081
+    networks:
+      - mock-network
+    depends_on:
+      be-wallet-mock:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -O /dev/null http://localhost:8083/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # WsProxy Mock
+  be-wsproxy-mock:
+    build:
+      context: ./be-wsproxy-mock
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+      - "5555:5555"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+      - APP_WEBSOCKET_PATH=/websocket
+      - APP_GRPC_GAME_BACKEND_HOST=host.docker.internal
+      - APP_GRPC_GAME_BACKEND_PORT=9092
+      - APP_GRPC_GAME_BACKEND_DEADLINE_SECONDS=30
+      - APP_ZMQ_SUB_URL=tcp://0.0.0.0:5555
+      - APP_GAME_TOKEN_SECRET=game-token-secret-key-change-in-production-12345678901234567890
+      - APP_WALLET_BASE_URL=http://be-wallet-mock:8081
+    networks:
+      - mock-network
+    depends_on:
+      be-agency-mock:
+        condition: service_healthy
+      be-wallet-mock:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -O /dev/null http://localhost:8082/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Wallet Mock
+  be-wallet-mock:
+    build:
+      context: ./be-wallet-mock
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+      - "9093:9093"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+      - APP_WALLET_INITIAL_BALANCE=1000000
+      - APP_WALLET_CURRENCY=VND
+    networks:
+      - mock-network
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -O /dev/null http://localhost:8081/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  mock-network:
+    driver: bridge

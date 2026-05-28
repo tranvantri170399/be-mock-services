@@ -1,0 +1,39 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: be-agency-mock
+  
+  datasource:
+    url: jdbc:h2:mem:agencydb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+app:
+  jwt:
+    secret: agency-mock-secret-key-change-in-production-12345678901234567890
+    expiration: 86400000  # 24 hours in ms
+  
+  game-token:
+    secret: game-token-secret-key-change-in-production-12345678901234567890
+    expiration: 3600000  # 1 hour in ms
+  
+  wallet:
+    initial-balance: 1000000  # in cents (10000.00)
+    agency-id: AGENCY_001
+    base-url: http://localhost:8081

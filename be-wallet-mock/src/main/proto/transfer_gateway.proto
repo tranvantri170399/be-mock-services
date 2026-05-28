@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package luigi.outbound.integration.v1;
+
+option java_package = "com.luigi.outbound.integration.grpc";
+option java_outer_classname = "TransferGatewayProto";
+option java_multiple_files = true;
+
+// TransferGateway is the single entry point for all batch wallet operations.
+service TransferGateway {
+  rpc BatchTransfer (BatchTransferRequest) returns (BatchTransferResponse);
+  rpc GetBalance    (BalanceRequest)       returns (BalanceResponse);
+}
+
+// ---------------------------------------------------------------------------
+// Inbound (GameService → Gateway)
+// ---------------------------------------------------------------------------
+
+message BatchTransferRequest {
+  string game_id  = 1;  // Required - identifies the game
+  string round_id = 2;  // Required - round identifier
+  int64  ts       = 3;  // Required - Unix timestamp in seconds (anti-replay)
+  repeated TransferItem transfers = 4;
+}
+
+message TransferItem {
+  string agency_id          = 1;  // Required - tenant identifier
+  string transaction_id     = 2;  // Required - unique idempotency key
+  string ref_transaction_id = 3;  // Required for CANCEL, REFUND, RELEASE
+  string action             = 4;  // Required - DEBIT | CREDIT
+  string type               = 5;  // Required - BET|SETTLE|CANCEL|REFUND|RESERVE|ADJUST|RELEASE|RESETTLE
+  string option             = 6;  // Optional - DUES (allows overdraft for RESERVE/RESETTLE)
+  double amount             = 7;  // Required - must be > 0
+  string currency           = 8;  // Required - e.g. VND, USD
+  string user_id            = 9;  // Required - format: agencyId:userName:<MemberId>
+  string ticket_id          = 10; // Optional
+  string data               = 11; // Optional - JSON string (player history)
+  double stake              = 12; // Optional
+  double win_lost           = 13; // Optional
+  double tax                = 14; // Optional
+  string ip_play            = 15; // Optional - IP address of player
+  int64  round_start_time   = 16; // Optional - Unix timestamp (ms) when the round started
+  int64  round_end_time     = 17; // Optional - Unix timestamp (ms) when the round ended
+}
+
+// ---------------------------------------------------------------------------
+// Outbound (Gateway → GameService)
+// ---------------------------------------------------------------------------
+
+message BatchTransferResponse {
+  repeated TransferResult transfers = 1; // Order matches request
+}
+
+message TransferResult {
+  string transaction_id = 1;  // Same as request transactionId
+  int32  code           = 2;  // See ResponseCode enum in model layer
+  string msg            = 3;  // Human-readable message
+  int64  ts             = 4;  // Unix timestamp of response
+  double request_amount = 5;  // Original amount from request
+  double payout_amount  = 6;  // Actual processed amount
+  double balance_after  = 7;  // Balance after transaction
+}
+
+// ---------------------------------------------------------------------------
+// GetBalance
+// ---------------------------------------------------------------------------
+
+message BalanceRequest {
+  string user_id = 1;  // Required - format: agencyId:userName:memberId
+}
+
+message BalanceResponse {
+  int32  code    = 1;  // See ResponseCode enum in model layer
+  string msg     = 2;  // Human-readable message
+  double balance = 3;  // Current balance of the user
+}
